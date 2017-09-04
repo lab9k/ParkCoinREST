@@ -19,7 +19,8 @@
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
-    "mongoose": "^4.11.10"
+    "mongoose": "^4.11.10",
+    "web3": "^1.0.0-beta.18"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
