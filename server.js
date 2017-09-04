@@ -26,7 +26,10 @@ app.get('/:plate', (req, res) => {
             if (docs.length === 0) {
                 res.send({ valid: false, timestamp: 0});
             } else {
-                res.send(contract.getTimestampForId(parseInt(docs[0]._id)).toString());
+                res.send({
+                    valid: false,
+                    timestamp: contract.getTimestampForId(parseInt(docs[0]._id)).toString()
+                });
             }
             db.close();
         });
