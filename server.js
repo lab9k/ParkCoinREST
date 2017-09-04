@@ -28,7 +28,7 @@ app.get('/:plate', (req, res) => {
             } else {
                 let unixTimestamp = contract.getTimestampForId(parseInt(docs[0]._id));
                 res.send({
-                    valid: Date.now() < unixTimestamp,
+                    valid: Date.now() <= unixTimestamp,
                     timestamp: unixTimestamp
                 });
             }
