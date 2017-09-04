@@ -10,8 +10,8 @@ app.get('/:plate', (req, res) => {
     res.send(plate);
 });
 
-app.post('new', (req, res) => {
-
+app.post('/new', (req, res) => {
+    res.send(req);
 });
 
 app.listen(3000, function () {
