@@ -26,9 +26,10 @@ app.get('/:plate', (req, res) => {
             if (docs.length === 0) {
                 res.send({ valid: false, timestamp: 0});
             } else {
+                let unixTimestamp = contract.getTimestampForId(parseInt(docs[0]._id));
                 res.send({
-                    valid: false,
-                    timestamp: contract.getTimestampForId(parseInt(docs[0]._id)).toString()
+                    valid: Date.now() < unixTimestamp,
+                    timestamp: unixTimestamp
                 });
             }
             db.close();
@@ -43,5 +44,4 @@ app.post('/new', (req, res) => {
 
 app.listen(3000, function () {
     console.log('App listening on port 3000');
-
 });
