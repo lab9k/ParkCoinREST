@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 const contract = require('./contract.js');
 
 app.get('/', function (req, res) {
-    res.send(contract.print());
+    res.send(contract.getTimestampForId(8).toString());
 });
 
 app.get('/:plate', (req, res) => {
@@ -22,7 +22,7 @@ app.get('/:plate', (req, res) => {
     MongoClient.connect(url, function (err, db) {
         console.log("Connected to parking db, fetching license plate");
         let collection = db.collection('licensePlates');
-        collection.find({"licensePlate": plate}).toArray(function (err, docs) {
+        collection.find({ "licensePlate": plate }).toArray(function (err, docs) {
             res.send(docs);
             db.close();
         });
@@ -31,10 +31,10 @@ app.get('/:plate', (req, res) => {
 
 app.post('/new', (req, res) => {
     let plate = req.body.plate;
-    res.send(plate); 
+    res.send(plate);
 });
 
 app.listen(3000, function () {
     console.log('App listening on port 3000');
-  
+
 });
