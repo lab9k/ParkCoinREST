@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/lab9k/ParkingREST/issues"
   },
-  "homepage": "https://github.com/lab9k/ParkingREST#readme"
+  "homepage": "https://github.com/lab9k/ParkingREST#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "mongoose": "^4.11.10"
+  }
 }
