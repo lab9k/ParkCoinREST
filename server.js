@@ -1,19 +1,13 @@
 const express = require('express');
 const app = express();
-const MongoClient = require('mongodb').MongoClient;
-const config = require('./config.json');
-
-const url = 'mongodb://' + config.dburl;
+var bodyParser = require('body-parser')
+app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+}));
 
 app.get('/', function (req, res) {
-    MongoClient.connect(url, function (err, db) {
-        console.log("Connected to parking db");
-        let collection = db.collection('licensePlates');
-        collection.find({}).toArray(function (err, docs) {
-            res.send(docs);
-            db.close();
-        });
-    });
+    res.send('Hello world!!!!');
 });
 
 app.get('/:plate', (req, res) => {
@@ -21,10 +15,11 @@ app.get('/:plate', (req, res) => {
     res.send(plate);
 });
 
-app.post('new', (req, res) => {
-
+app.post('/new', (req, res) => {
+    let plate = req.body.plate;
+    res.send(plate); 
 });
 
 app.listen(3000, function () {
     console.log('App listening on port 3000');
-}); 
+});
