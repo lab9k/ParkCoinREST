@@ -6,8 +6,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
+const contract = require('./contract.js');
+
 app.get('/', function (req, res) {
-    res.send('Hello world!!!!');
+    res.send(contract.print());
 });
 
 app.get('/:plate', (req, res) => {
@@ -22,4 +24,5 @@ app.post('/new', (req, res) => {
 
 app.listen(3000, function () {
     console.log('App listening on port 3000');
+  
 });
