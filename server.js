@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
+const config = require('./config.json');
+
+const url = "mongodb://" + config.dburl;
+
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
@@ -12,7 +17,14 @@ app.get('/', function (req, res) {
 
 app.get('/:plate', (req, res) => {
     let plate = req.params['plate'];
-    res.send(plate);
+    MongoClient.connect(url, function (err, db) {
+        console.log("Connected to parking db, fetching license plate");
+        let collection = db.collection('licensePlates');
+        collection.find({"licensePlate": plate}).toArray(function (err, docs) {
+            res.send(docs);
+            db.close();
+        });
+    });
 });
 
 app.post('/new', (req, res) => {
