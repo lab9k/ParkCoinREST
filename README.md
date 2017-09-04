@@ -11,4 +11,4 @@ REST api for the Parking ethereum application
 
 ### run server
 
-    nodemon ./server.js localhost 8080
+    nodemon ./server.js localhost 3000
