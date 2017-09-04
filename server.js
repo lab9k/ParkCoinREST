@@ -27,7 +27,15 @@ app.get('/check/:plate', (req, res) => {
         console.log("Connected to parking db, fetching license plate");
         let collection = db.collection('licensePlates');
         collection.find({ "licensePlate": plate }).toArray(function (err, docs) {
-            res.send(docs);
+            if (docs.length === 0) {
+                res.send({ valid: false, timestamp: 0});
+            } else {
+                let unixTimestamp = contract.getTimestampForId(parseInt(docs[0]._id));
+                res.send({
+                    valid: Date.now() <= unixTimestamp,
+                    timestamp: unixTimestamp
+                });
+            }
             db.close();
         });
     });
@@ -40,5 +48,4 @@ app.post('/new', (req, res) => {
 
 app.listen(3000, function () {
     console.log('App listening on port 3000');
-
 });
