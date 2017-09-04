@@ -23,7 +23,11 @@ app.get('/:plate', (req, res) => {
         console.log("Connected to parking db, fetching license plate");
         let collection = db.collection('licensePlates');
         collection.find({ "licensePlate": plate }).toArray(function (err, docs) {
-            res.send(contract.getTimestampForId(parseInt(docs[0]._id)).toString());
+            if (docs.length === 0) {
+                res.send({ valid: false, timestamp: 0});
+            } else {
+                res.send(contract.getTimestampForId(parseInt(docs[0]._id)).toString());
+            }
             db.close();
         });
     });
