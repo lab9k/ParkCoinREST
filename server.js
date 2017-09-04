@@ -14,10 +14,14 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 const contract = require('./contract.js');
 
 app.get('/', function (req, res) {
-    res.send(contract.getTimestampForId(8).toString());
+    contract.getTimestampForId(1, 0).then((value) => {
+        res.send(value);
+    }).catch((error) => {
+        res.send(error);
+    })
 });
 
-app.get('/:plate', (req, res) => {
+app.get('/check/:plate', (req, res) => {
     let plate = req.params['plate'];
     MongoClient.connect(url, function (err, db) {
         console.log("Connected to parking db, fetching license plate");
