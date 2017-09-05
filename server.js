@@ -32,7 +32,7 @@ app.get('/check/:plate', (req, res) => {
             } else {
                 contract.getTimestampForId(parseInt(docs[0]._id), 1).then(function (value, err) {
                     res.send({
-                        valid: Date.now() <= value.parseInt(),
+                        valid: Date.now() <= parseInt(value),
                         timestamp: value,
                         plate: plate
                     });
