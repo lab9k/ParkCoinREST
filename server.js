@@ -15,7 +15,7 @@ const contract = require('./contract.js');
 
 app.get('/', function (req, res) {
     contract.getTimestampForId(1, 0).then((value) => {
-        res.send(value.toString());
+        res.send(value);
     }).catch((error) => {
         res.send(error.toString());
     })
@@ -30,9 +30,9 @@ app.get('/check/:plate', (req, res) => {
             if (docs.length === 0) {
                 res.send({ valid: false, timestamp: 0, plate: plate });
             } else {
-                contract.getTimestampForId(parseInt(docs[0]._id), 1).then(function (err, value) {
+                contract.getTimestampForId(parseInt(docs[0]._id), 1).then(function (value, err) {
                     res.send({
-                        valid: Date.now() <= value,
+                        valid: Date.now() <= value.parseInt(),
                         timestamp: value,
                         plate: plate
                     });

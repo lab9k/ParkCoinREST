@@ -8,7 +8,7 @@ function _getTimestampForId(id, regio) {
     let contractInstance = new web3.eth.Contract(abi, contractAddress);
 
     return new Promise(function (resolve, reject) {
-        contractInstance.methods.buyPrice().call((error, value) => {
+        contractInstance.methods.tickets(id, regio).call((error, value) => {
             if (error) {
                 reject(error);
             } else {
@@ -22,4 +22,4 @@ module.exports = {
     getTimestampForId: (id, regio) => {
         return _getTimestampForId(id, regio);
     }
-}
+};
