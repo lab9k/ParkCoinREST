@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
     contract.getTimestampForId(1, 0).then((value) => {
         res.send(value.toString());
     }).catch((error) => {
-        res.send(error);
+        res.send(error.toString());
     })
 });
 
