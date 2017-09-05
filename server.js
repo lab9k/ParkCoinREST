@@ -28,10 +28,11 @@ app.get('/check/:plate', (req, res) => {
         let collection = db.collection('licensePlates');
         collection.find({ "licensePlate": plate }).toArray(function (err, docs) {
             if (docs.length === 0) {
-                res.send({ valid: false, timestamp: 0});
+                res.send({ licensePlate: plate, valid: false, timestamp: 0});
             } else {
                 let unixTimestamp = contract.getTimestampForId(parseInt(docs[0]._id));
                 res.send({
+                    licensePlate: plate,
                     valid: Date.now() <= unixTimestamp,
                     timestamp: unixTimestamp
                 });
