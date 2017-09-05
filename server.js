@@ -30,12 +30,19 @@ app.get('/check/:plate', (req, res) => {
             if (docs.length === 0) {
                 res.send({ valid: false, timestamp: 0, plate: plate });
             } else {
-                contract.getTimestampForId(parseInt(docs[0]._id), 1).then(function (value, err) {
+                contract.getTimestampForId(parseInt(docs[0]._id), 1).then(function (value) {
                     res.send({
                         valid: Date.now() <= parseInt(value),
                         timestamp: value,
                         plate: plate
                     });
+                }).catch((error) => {
+                    res.send({
+                        valid: false,
+                        timestamp: 0,
+                        plate: plate,
+                        error: error
+                    })
                 });
             }
         });
