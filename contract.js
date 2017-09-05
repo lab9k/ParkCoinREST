@@ -9,7 +9,7 @@ function _getTimestampForId(id, regio) {
     let contractInstance = new web3.eth.Contract(abi, contractAddress);
 
     return new Promise(function (resolve, reject) {
-        contractInstance.tickets(regio, id, (error, value) => {
+        contractInstance.methods.buyPrice().call((error, value) => {
             if (error) {
                 reject(error);
             } else {
