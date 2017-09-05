@@ -10,7 +10,7 @@ function _getTimestampForId(id, regio) {
     let contractInstance = contract.at(contractAddress);
 
     return new Promise(function (resolve, reject) {
-        contractInstance.tickets(regio, id, function (error, value) {
+        contractInstance.tickets(regio, id, (error, value) => {
             if (error) {
                 reject(error);
             } else {
