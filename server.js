@@ -36,14 +36,22 @@ app.get('/check/:plate', (req, res) => {
                     timestamp: unixTimestamp
                 });
             }
-            db.close();
         });
+        db.close();
     });
 });
 
 app.post('/new', (req, res) => {
     let plate = req.body.plate;
-    res.send(plate);
+    MongoClient.connect(url, function (err, db) {
+        console.log("Connected to parking db, inserting license plate");
+        let collection = db.collection('licensePlates');
+        collection.insertMany([{ "licensePlate": plate }], function (err, result) {
+            console.log("Inserted license plate");
+            res.send("Added license plate " + plate);
+        });
+        db.close();
+    });
 });
 
 app.listen(3000, function () {
