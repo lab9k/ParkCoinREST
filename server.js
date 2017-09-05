@@ -12,10 +12,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 const contract = require('./contract.js');
-
+ 
 app.get('/', function (req, res) {
     contract.getTimestampForId(1, 0).then((value) => {
-        res.send(value);
+        res.send(value.toString());
     }).catch((error) => {
         res.send(error);
     })
