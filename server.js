@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 const contract = require('./contract.js');
- 
+
 app.get('/', function (req, res) {
     contract.getTimestampForId(1, 0).then((value) => {
         res.send(value.toString());
@@ -28,12 +28,13 @@ app.get('/check/:plate', (req, res) => {
         let collection = db.collection('licensePlates');
         collection.find({ "licensePlate": plate }).toArray(function (err, docs) {
             if (docs.length === 0) {
-                res.send({ valid: false, timestamp: 0});
+                res.send({ valid: false, timestamp: 0, plate: plate });
             } else {
                 let unixTimestamp = contract.getTimestampForId(parseInt(docs[0]._id));
                 res.send({
                     valid: Date.now() <= unixTimestamp,
-                    timestamp: unixTimestamp
+                    timestamp: unixTimestamp,
+                    plate: plate
                 });
             }
         });
