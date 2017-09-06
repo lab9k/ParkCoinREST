@@ -7,7 +7,7 @@ function _getTimestampForId(id, regio) {
     let contractAddress = config.contractAddress;
     let contractInstance = new web3.eth.Contract(abi, contractAddress);
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         contractInstance.methods.tickets(id, regio).call((error, value) => {
             if (error) {
                 reject(error);

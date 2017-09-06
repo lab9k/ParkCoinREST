@@ -23,14 +23,14 @@ app.get('/', function (req, res) {
 
 app.get('/check/:plate', (req, res) => {
     let plate = req.params['plate'];
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, (err, db) => {
         console.log("Connected to parking db, fetching license plate");
         let collection = db.collection('licensePlates');
-        collection.find({ "licensePlate": plate }).toArray(function (err, docs) {
+        collection.find({ "licensePlate": plate }).toArray((err, docs) => {
             if (docs.length === 0) {
                 res.send({ valid: false, timestamp: 0, plate: plate });
             } else {
-                contract.getTimestampForId(parseInt(docs[0]._id), 1).then(function (value) {
+                contract.getTimestampForId(parseInt(docs[0]._id), 1).then((value) => {
                     res.send({
                         valid: Date.now() <= parseInt(value),
                         timestamp: value,
@@ -52,10 +52,10 @@ app.get('/check/:plate', (req, res) => {
 
 app.post('/new', (req, res) => {
     let plate = req.body.plate;
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, (err, db) => {
         console.log("Connected to parking db, inserting license plate");
         let collection = db.collection('licensePlates');
-        collection.insertMany([{ "licensePlate": plate }], function (err, result) {
+        collection.insertMany([{ "licensePlate": plate }], (err, result) => {
             console.log("Inserted license plate");
             res.send("Added license plate " + plate);
         });
@@ -63,6 +63,6 @@ app.post('/new', (req, res) => {
     });
 });
 
-app.listen(3000, function () {
+app.listen(3000, () => {
     console.log('App listening on port 3000');
 });
