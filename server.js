@@ -57,7 +57,7 @@ app.post('/new', (req, res) => {
         let collection = db.collection('licensePlates');
         collection.insertMany([{ "licensePlate": plate }], (err, result) => {
             console.log("Inserted license plate");
-            res.send("Added license plate " + plate);
+            res.send("Added license plate " + plate + result);
         });
         db.close();
     });

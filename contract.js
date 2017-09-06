@@ -25,7 +25,7 @@ let clientReceipt = ClientReceipt.at(config.contractAdress /* address */);
 let event = clientReceipt.Park();
 
 // watch for changes
-event.watch(function(error, result){
+event.watch(function (error, result) {
     // result will contain various information
     // including the argumets given to the Deposit
     // call.
@@ -35,7 +35,7 @@ event.watch(function(error, result){
 });
 
 // Or pass a callback to start watching immediately
-let event = clientReceipt.Park(function(error, result) {
+clientReceipt.Park(function (error, result) {
     if (!error) {
         console.log(result);
     }
