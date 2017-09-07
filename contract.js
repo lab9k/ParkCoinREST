@@ -7,22 +7,6 @@ const MongoClient = require('mongodb').MongoClient;
 let privateKey = new NodeRSA(config.privateKey, { 'encryptionScheme': 'pkcs1' });
 let url = "mongodb://" + config.dburl;
 
-function _getTimestampForId(id, regio) {
-    let abi = config.contractABI;
-    let contractAddress = config.contractAddress;
-    let contractInstance = new web3.eth.Contract(abi, contractAddress);
-
-    return new Promise((resolve, reject) => {
-        contractInstance.methods.tickets(id, regio).call((error, value) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(value);
-            }
-        });
-    });
-}
-
 let contract = web3.eth.contract(config.contractABI).at(config.contractAdress);
 
 // Upon booting up, go over all previous events and add all license plates to the db if they
@@ -85,9 +69,3 @@ contract.Park().watch(function (err, event) {
         });
     }
 });
-
-module.exports = {
-    getTimestampForId: (id, regio) => {
-        return _getTimestampForId(id, regio);
-    }
-};
