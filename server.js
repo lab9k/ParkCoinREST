@@ -50,19 +50,6 @@ app.get('/check/:plate', (req, res) => {
     });
 });
 
-app.post('/new', (req, res) => {
-    let plate = req.body.plate;
-    MongoClient.connect(url, (err, db) => {
-        console.log("Connected to parking db, inserting license plate");
-        let collection = db.collection('licensePlates');
-        collection.insertMany([{ "licensePlate": plate }], (err, result) => {
-            console.log("Inserted license plate");
-            res.send("Added license plate " + plate + result);
-        });
-        db.close();
-    });
-});
-
 app.listen(3000, () => {
     console.log('App listening on port 3000');
 });
