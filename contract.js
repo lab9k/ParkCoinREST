@@ -1,6 +1,9 @@
 const config = require('./config.json');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider(config.provider));
+const NodeRSA = require('node-rsa');
+
+let key = new NodeRSA(config.privateKey, { 'encryptionScheme': 'pkcs1' });
 
 function _getTimestampForId(id, regio) {
     let abi = config.contractABI;
@@ -18,16 +21,21 @@ function _getTimestampForId(id, regio) {
     });
 }
 
-let contract = new web3.eth.Contract(config.contractABI, config.contractAdress);
+let contract = web3.eth.contract(config.contractABI).at(config.contractAdress);
 
-contract.events.Park(function (err, event) {
-    console.log("New Park event: ");
-    console.log(event);
-});
-
-contract.getPastEvents('Park', function (err, events) {
-    console.log("All previous Park events: ");
-    console.log(events);
+contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get((error, result) => {
+    if (error) {
+        console.log(error);
+    }
+    else {
+        for (let i = 0; i < result.length; i++) {
+            let resArgs = result[i].args;
+            console.log("Nummerplaat: ");
+            console.log(key.decrypt(resArgs.nummerplaatEncrypted, 'utf8'));
+            console.log("Key: ");
+            console.log(resArgs.key);
+        }
+    }
 });
 
 module.exports = {
