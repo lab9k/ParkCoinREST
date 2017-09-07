@@ -28,6 +28,7 @@ contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get(function (err, events
                         toInsert.push({ licensePlate: licensePlate, key: key });
                     }
                 }
+                console.log(toInsert);
                 if (toInsert.length === 0) {
                     licensePlates.insertMany(toInsert, function (err, result) {
                         if (err) {
