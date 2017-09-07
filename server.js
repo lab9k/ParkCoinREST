@@ -25,7 +25,7 @@ app.get('/check/:plate', (req, res) => {
             if (docs.length === 0) {
                 res.send({ res: { licensePlate: licensePlate, timestamp: -1, valid: false } });
             } else {
-                contract.getTimestampForId(parseInt(docs[0]._id), 1).then((value) => {
+                contract.getTimestampForKey(parseInt(docs[0]._id), 1).then((value) => {
                     res.send({
                         valid: Date.now() <= parseInt(value),
                         timestamp: value,
