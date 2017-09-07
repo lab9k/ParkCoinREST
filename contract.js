@@ -43,6 +43,7 @@ contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get(function (err, events
     }
 });
 
+// On each new event, add to db
 contract.Park().watch(function (err, event) {
     if (err) {
         console.log(err);
@@ -69,3 +70,21 @@ contract.Park().watch(function (err, event) {
         });
     }
 });
+
+function _getTimestampForKey(regio, key) {
+    return new Promise(function (resolve, reject) {
+        contract.tickets(regio, key, function (err, value) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(value);
+            }
+        })
+    })
+}
+
+module.exports = {
+    getTimestampForKey: function (regio, key) {
+        return _getTimestampForKey(regio, key);
+    }
+}
