@@ -1,4 +1,5 @@
 # ParkingREST
+
 REST API for the [lab9k Parking ethereum application](https://github.com/lab9k/Parking)
 
 ### Installation
@@ -25,7 +26,7 @@ A simple MongoDB database needs to be set up with a `parking` database containin
 
     nodemon ./server.js localhost 3001
     
-## Implementation
+### Implementation
 
 Each 'Park' event added to the contract will be caught by the API. The encrypted license plate will then be 
 decrypted using the specified private key from the config. The decrypted plate will be stored alongside of it's key
