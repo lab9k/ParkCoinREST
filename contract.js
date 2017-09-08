@@ -77,7 +77,7 @@ function _getTimestampForKey(regio, key) {
             if (err) {
                 reject(err);
             } else {
-                resolve(value);
+                resolve({ regio: regio, timestamp: value });
             }
         });
     });
