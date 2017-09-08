@@ -32,20 +32,20 @@ app.get('/check/:plate', (req, res) => {
                 res.send({
                     licensePlate: licensePlate,
                     regions: {
-                        0: { timestamps: [], valid: false },
-                        1: { timestamps: [], valid: false },
-                        2: { timestamps: [], valid: false },
-                        3: { timestamps: [], valid: false }
+                        0: { timestamp: 0, valid: false },
+                        1: { timestamp: 0, valid: false },
+                        2: { timestamp: 0, valid: false },
+                        3: { timestamp: 0, valid: false }
                     }
                 });
             } else {
                 let result = {
                     licensePlate: licensePlate,
                     regions: {
-                        0: { timestamps: [] },
-                        1: { timestamps: [] },
-                        2: { timestamps: [] },
-                        3: { timestamps: [] }
+                        0: { timestamp: 0 },
+                        1: { timestamp: 0 },
+                        2: { timestamp: 0 },
+                        3: { timestamp: 0 }
                     }
                 };
                 let promises = [];
@@ -56,15 +56,22 @@ app.get('/check/:plate', (req, res) => {
                         promises.push(contract.getTimestampForKey(j, docs[i].key));
                     }
                 }
+                let timestampNow = Math.floor(Date.now() / 1000);
+                // Array with the sum of the all the timestamps for each region
+                let durations = [0, 0, 0, 0];
                 // Wait for each promise to resolve before sending the response
                 Promise.all(promises).then(function (values) {
                     for (let i = 0; i < values.length; i++) {
-                        if (parseInt(values[i].timestamp.valueOf()) !== 0) {
-                            result.regions[values[i].regio].timestamps.push(parseInt(values[i].timestamp.valueOf()));
+                        let timestamp = parseInt(values[i].timestamp.valueOf());
+                        if (timestamp !== 0) {
+                            if (timestamp > timestampNow) {
+                                durations[values[i].regio] += timestamp - timestampNow;
+                            }
                         }
                     }
-                    // Assign valid for each region
+                    // Assign timestamp and valid for each region
                     for (let i = 0; i < 4; i++) {
+                        result.regions[i].timestamp = timestampNow + durations[i];
                         result.regions[i].valid = result.regions[i].timestamps.length !== 0;
                     }
                     res.send(result);
@@ -86,24 +93,39 @@ app.get('/check/:plate/:regio', (req, res) => {
             if (docs.length === 0) {
                 res.send({
                     licensePlate: licensePlate,
-                    timestamps: [],
+                    timestamps: 0,
                     valid: false
                 });
             } else {
                 let result = {
                     licensePlate: licensePlate,
-                    timestamps: []
+                    timestamp: 0
                 };
+                let promises = [];
                 // Loop through each key of the license plate
                 for (let i = 0; i < docs.length; i++) {
-                    contract.getTimestampForKey(regio, docs[i].key).then(function (value) {
-                        if (value !== 0) {
-                            result.timestamps.push(value);
-                        }
-                    }).catch(function (error) {
-                        res.send(error);
-                    });
+                    promises.push(contract.getTimestampForKey(regio, docs[i].key));
                 }
+                let timestampNow = Math.floor(Date.now() / 1000);
+                let duration = 0;
+                Promise.all(promises).then(function (values) {
+                    for (let i = 0; i < values.length; i++) {
+                        let timestamp = parseInt(values[i].timestamp.valueOf());
+                        if (timestamp !== 0) {
+                            if (timestamp > timestampNow) {
+                                duration += timestamp - timestampNow;
+                            }
+                        }
+                    }
+                    // Assign timestamp and valid for each region
+                    for (let i = 0; i < 4; i++) {
+                        result.timestamp = timestampNow + duration;
+                        result.valid = result.regions[i].timestamps.length !== 0;
+                    }
+                    res.send(result);
+                }).catch(function (error) {
+                    res.send("Error requesting license plate: "+ error);
+                });
                 // Assign valid
                 for (let i = 0; i < 4; i++) {
                     result.valid = result.timestamps.length !== 0;
