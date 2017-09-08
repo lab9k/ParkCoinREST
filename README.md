@@ -11,13 +11,13 @@ REST API for the [lab9k Parking ethereum application](https://github.com/lab9k/P
     
 After installing, a config.json needs to be added, in the following format
 
-        {
-          "dburl": "{url}/parking",
-          "contractAdress": "",
-          "provider": "",
-          "contractABI": "",
-          "privateKey": ""
-        }
+    {
+      "dburl": "{url}/parking",
+      "contractAdress": "",
+      "provider": "",
+      "contractABI": "",
+      "privateKey": ""
+    }
 
 ### Run server
 
