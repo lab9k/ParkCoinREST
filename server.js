@@ -54,7 +54,7 @@ app.get('/check/:plate', (req, res) => {
                 Promise.all(promises).then(function (values) {
                     for (let i = 0; i < values.length; i++) {
                         if (values[i].timestamp.valueOf() !== 0) {
-                            result.regions[values[i].regio].push(values[i].timestamp.valueOf());
+                            result.regions[values[i].regio].timestamps.push(values[i].timestamp.valueOf());
                         }
                     }
                     // Assign valid for each region
