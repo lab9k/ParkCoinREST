@@ -72,7 +72,7 @@ app.get('/check/:plate', (req, res) => {
                     // Assign timestamp and valid for each region
                     for (let i = 0; i < 4; i++) {
                         result.regions[i].timestamp = timestampNow + durations[i];
-                        result.regions[i].valid = result.regions[i].timestamps.length !== 0;
+                        result.regions[i].valid = result.regions[i].timestamp !== 0;
                     }
                     res.send(result);
                 }).catch(function (error) {
@@ -120,7 +120,7 @@ app.get('/check/:plate/:regio', (req, res) => {
                     // Assign timestamp and valid for each region
                     for (let i = 0; i < 4; i++) {
                         result.timestamp = timestampNow + duration;
-                        result.valid = result.regions[i].timestamps.length !== 0;
+                        result.valid = result.regions[i].timestamp !== 0;
                     }
                     res.send(result);
                 }).catch(function (error) {
