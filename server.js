@@ -18,7 +18,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/check/:plate', (req, res) => {
-    let licensePlate = req.params['plate'].trim().replace(/[^a-z0-9]/i, '');
+    let licensePlate = req.params['plate'].trim().replace(/[^a-z0-9]/i, '').toUpperCase();
     MongoClient.connect(url, (err, db) => {
         let licensePlates = db.collection('licensePlates');
         licensePlates.find({ "licensePlate": licensePlate }).toArray((err, docs) => {
@@ -74,7 +74,7 @@ app.get('/check/:plate', (req, res) => {
 });
 
 app.get('/check/:plate/:regio', (req, res) => {
-    let licensePlate = req.params['plate'].trim().replace(/[^a-z0-9]/i, '');
+    let licensePlate = req.params['plate'].trim().replace(/[^a-z0-9]/i, '').toUpperCase();
     let regio = req.params['regio'];
     MongoClient.connect(url, (err, db) => {
         let licensePlates = db.collection('licensePlates');
@@ -93,7 +93,7 @@ app.get('/check/:plate/:regio', (req, res) => {
                 let promises = [];
                 // Loop through each key of the license plate
                 for (let i = 0; i < docs.length; i++) {
-                    promises.push(contract.getTimestampForKey(regio, docs[i].key));
+                    promises.push(contract.getTimestampForKey(parseInt(regio), docs[i].key));
                 }
                 let timestampNow = Math.floor(Date.now() / 1000);
                 Promise.all(promises).then(function (values) {
