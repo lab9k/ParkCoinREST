@@ -24,7 +24,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/check/:plate', (req, res) => {
-    let licensePlate = req.params['plate'];
+    let licensePlate = req.params['plate'].trim().replace(/[^a-z0-9]/i, '');
     MongoClient.connect(url, (err, db) => {
         let licensePlates = db.collection('licensePlates');
         licensePlates.find({ "licensePlate": licensePlate }).toArray((err, docs) => {
@@ -32,20 +32,20 @@ app.get('/check/:plate', (req, res) => {
                 res.send({
                     licensePlate: licensePlate,
                     regions: {
-                        0: { timestamp: 0, valid: false },
-                        1: { timestamp: 0, valid: false },
-                        2: { timestamp: 0, valid: false },
-                        3: { timestamp: 0, valid: false }
+                        0: { timestamps: [], valid: false },
+                        1: { timestamps: [], valid: false },
+                        2: { timestamps: [], valid: false },
+                        3: { timestamps: [], valid: false }
                     }
                 });
             } else {
                 let result = {
                     licensePlate: licensePlate,
                     regions: {
-                        0: { timestamp: 0 },
-                        1: { timestamp: 0 },
-                        2: { timestamp: 0 },
-                        3: { timestamp: 0 }
+                        0: { timestamps: [] },
+                        1: { timestamps: [] },
+                        2: { timestamps: [] },
+                        3: { timestamps: [] }
                     }
                 };
                 let promises = [];
@@ -57,24 +57,17 @@ app.get('/check/:plate', (req, res) => {
                     }
                 }
                 let timestampNow = Math.floor(Date.now() / 1000);
-                // Array with the sum of the all the timestamps for each region
-                let durations = [0, 0, 0, 0];
                 // Wait for each promise to resolve before sending the response
                 Promise.all(promises).then(function (values) {
                     for (let i = 0; i < values.length; i++) {
                         let timestamp = parseInt(values[i].timestamp.valueOf());
-                        if (timestamp !== 0) {
-                            if (timestamp > timestampNow) {
-                                durations[values[i].regio] += timestamp - timestampNow;
-                            }
+                        if (timestamp !== 0 && timestamp > timestampNow) {
+                            result.regions[values[i].regio].timestamps.push(timestamp);
                         }
                     }
                     // Assign timestamp and valid for each region
                     for (let i = 0; i < 4; i++) {
-                        if (durations[i] !== 0) {
-                            result.regions[i].timestamp = timestampNow + durations[i];
-                        }
-                        result.regions[i].valid  = result.regions[i].timestamp !== 0;
+                        result.regions[i].valid = result.regions[i].timestamps.length !== 0;
                     }
                     res.send(result);
                 }).catch(function (error) {
@@ -87,21 +80,21 @@ app.get('/check/:plate', (req, res) => {
 });
 
 app.get('/check/:plate/:regio', (req, res) => {
-    let licensePlate = req.params['plate'];
+    let licensePlate = req.params['plate'].trim().replace(/[^a-z0-9]/i, '');
     let regio = req.params['regio'];
     MongoClient.connect(url, (err, db) => {
         let licensePlates = db.collection('licensePlates');
         licensePlates.find({ "licensePlate": licensePlate }).toArray((err, docs) => {
             if (docs.length === 0) {
                 res.send({
-                    licensePlate: licensePlate,
-                    timestamps: 0,
+                    licensePlate: req.params['plate'],
+                    timestamps: [],
                     valid: false
                 });
             } else {
                 let result = {
-                    licensePlate: licensePlate,
-                    timestamp: 0
+                    licensePlate: req.params['plate'],
+                    timestamps: []
                 };
                 let promises = [];
                 // Loop through each key of the license plate
@@ -109,23 +102,14 @@ app.get('/check/:plate/:regio', (req, res) => {
                     promises.push(contract.getTimestampForKey(regio, docs[i].key));
                 }
                 let timestampNow = Math.floor(Date.now() / 1000);
-                let duration = 0;
                 Promise.all(promises).then(function (values) {
                     for (let i = 0; i < values.length; i++) {
                         let timestamp = parseInt(values[i].timestamp.valueOf());
-                        if (timestamp !== 0) {
-                            if (timestamp > timestampNow) {
-                                duration += timestamp - timestampNow;
-                            }
+                        if (timestamp !== 0 && timestamp > timestampNow) {
+                             result.timestamps.push(timestamp);
                         }
                     }
-                    // Assign timestamp and valid for each region
-                    for (let i = 0; i < 4; i++) {
-                        if (duration !== 0) {
-                            result.timestamp = timestampNow + duration;
-                        }
-                        result.valid = result.regions[i].timestamp !== 0;
-                    }
+                    result.valid = result.timestamps.length !== 0;
                     res.send(result);
                 }).catch(function (error) {
                     res.send("Error requesting license plate: "+ error);
