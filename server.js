@@ -48,23 +48,21 @@ app.get('/check/:plate', (req, res) => {
                     // Check each region of the license plate
                     for (let j = 0; j < 4; j++) {
                         promises.push(contract.getTimestampForKey(j, docs[i].key));
-                        //     .then(function (value) {
-                        //     if (value !== 0) {
-                        //         result.regions[j].timestamps.push(value);
-                        //     }
-                        // }).catch(function (error) {
-                        //     res.send(error);
-                        // });
                     }
                 }
+                // Wait for each promise to resolve before sending the response
                 Promise.all(promises).then(function (values) {
-                    console.log(values);
+                    for (let i = 0; i < values.length; i++) {
+                        if (values[i].timestamp.valueOf() !== 0) {
+                            result.regions[values[i].regio].push(values[i].timestamps.valueOf());
+                        }
+                    }
+                    // Assign valid for each region
+                    for (let i = 0; i < 4; i++) {
+                        result.regions[i].valid = result.regions[i].timestamps.length !== 0;
+                    }
+                    res.send(result);
                 });
-                // Assign valid for each region
-                for (let i = 0; i < 4; i++) {
-                    result.regions[i].valid = result.regions[i].timestamps.length !== 0;
-                }
-                res.send(result);
             }
         });
         db.close();
