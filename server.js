@@ -24,7 +24,7 @@ app.get('/check/:plate', (req, res) => {
         licensePlates.find({ "licensePlate": licensePlate }).toArray((err, docs) => {
             if (docs.length === 0) {
                 res.send({
-                    licensePlate: licensePlate,
+                    licensePlate: req.params['plate'],
                     regions: {
                         0: { timestamps: [], valid: false },
                         1: { timestamps: [], valid: false },
@@ -34,7 +34,7 @@ app.get('/check/:plate', (req, res) => {
                 });
             } else {
                 let result = {
-                    licensePlate: licensePlate,
+                    licensePlate: req.params['plate'],
                     regions: {
                         0: { timestamps: [] },
                         1: { timestamps: [] },
