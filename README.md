@@ -18,6 +18,8 @@ After installing, a config.json needs to be added, in the following format
       "contractABI": "",
       "privateKey": ""
     }
+    
+A simple MongoDB database needs to be set up with a `parking` database containing a `licensePlates` collection.
 
 ### Run server
 
