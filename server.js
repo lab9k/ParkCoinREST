@@ -53,8 +53,8 @@ app.get('/check/:plate', (req, res) => {
                 // Wait for each promise to resolve before sending the response
                 Promise.all(promises).then(function (values) {
                     for (let i = 0; i < values.length; i++) {
-                        if (values[i].timestamp.valueOf() !== 0) {
-                            result.regions[values[i].regio].timestamps.push(values[i].timestamp.valueOf());
+                        if (parseInt(values[i].timestamp.valueOf()) !== 0) {
+                            result.regions[values[i].regio].timestamps.push(parseInt(values[i].timestamp.valueOf()));
                         }
                     }
                     // Assign valid for each region
