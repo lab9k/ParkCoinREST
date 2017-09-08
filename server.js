@@ -23,34 +23,6 @@ app.get('/check/:plate', (req, res) => {
         let licensePlates = db.collection('licensePlates');
         licensePlates.find({ "licensePlate": licensePlate }).toArray((err, docs) => {
             if (docs.length === 0) {
-                res.send({ res: { licensePlate: licensePlate, timestamp: -1, valid: false } });
-            } else {
-                contract.getTimestampForKey(parseInt(docs[0]._id), 1).then((value) => {
-                    res.send({
-                        valid: Date.now() <= parseInt(value),
-                        timestamp: value,
-                        plate: licensePlate
-                    });
-                }).catch((error) => {
-                    res.send({
-                        valid: false,
-                        timestamp: 0,
-                        plate: licensePlate,
-                        error: error
-                    })
-                });
-            }
-        });
-        db.close();
-    });
-});
-
-app.get('/check/:plate', (req, res) => {
-    let licensePlate = req.params['plate'];
-    MongoClient.connect(url, (err, db) => {
-        let licensePlates = db.collection('licensePlates');
-        licensePlates.find({ "licensePlate": licensePlate }).toArray((err, docs) => {
-            if (docs.length === 0) {
                 res.send({
                     licensePlate: licensePlate,
                     regions: {
