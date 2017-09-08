@@ -79,12 +79,12 @@ function _getTimestampForKey(regio, key) {
             } else {
                 resolve(value);
             }
-        })
-    })
+        });
+    });
 }
 
 module.exports = {
     getTimestampForKey: function (regio, key) {
         return _getTimestampForKey(regio, key);
     }
-}
+};

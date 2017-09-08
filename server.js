@@ -42,19 +42,24 @@ app.get('/check/:plate', (req, res) => {
                         3: { timestamps: [] }
                     }
                 };
+                let promises = [];
                 // Loop through each key of the license plate
                 for (let i = 0; i < docs.length; i++) {
                     // Check each region of the license plate
                     for (let j = 0; j < 4; j++) {
-                        contract.getTimestampForKey(j, docs[i].key).then(function (value) {
-                            if (value !== 0) {
-                                result.regions[j].timestamps.push(value);
-                            }
-                        }).catch(function (error) {
-                            res.send(error);
-                        });
+                        promises.push(contract.getTimestampForKey(j, docs[i].key));
+                        //     .then(function (value) {
+                        //     if (value !== 0) {
+                        //         result.regions[j].timestamps.push(value);
+                        //     }
+                        // }).catch(function (error) {
+                        //     res.send(error);
+                        // });
                     }
                 }
+                Promise.all(promises).then(function (values) {
+                    console.log(values);
+                });
                 // Assign valid for each region
                 for (let i = 0; i < 4; i++) {
                     result.regions[i].valid = result.regions[i].timestamps.length !== 0;
