@@ -54,7 +54,7 @@ app.get('/check/:plate', (req, res) => {
                 Promise.all(promises).then(function (values) {
                     for (let i = 0; i < values.length; i++) {
                         if (values[i].timestamp.valueOf() !== 0) {
-                            result.regions[values[i].regio].push(values[i].timestamps.valueOf());
+                            result.regions[values[i].regio].push(values[i].timestamp.valueOf());
                         }
                     }
                     // Assign valid for each region
@@ -62,6 +62,8 @@ app.get('/check/:plate', (req, res) => {
                         result.regions[i].valid = result.regions[i].timestamps.length !== 0;
                     }
                     res.send(result);
+                }).catch(function (error) {
+                    res.send("Error requesting license plate: "+ error);
                 });
             }
         });
