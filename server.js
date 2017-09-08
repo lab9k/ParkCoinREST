@@ -108,11 +108,6 @@ app.get('/check/:plate/:regio', (req, res) => {
                 }).catch(function (error) {
                     res.send("Error requesting license plate: "+ error);
                 });
-                // Assign valid
-                for (let i = 0; i < 4; i++) {
-                    result.valid = result.timestamps.length !== 0;
-                }
-                res.send(result);
             }
         });
         db.close();
