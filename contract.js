@@ -22,7 +22,12 @@ contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get(function (err, events
                 let toInsert = [];
                 for (let i = 0; i < events.length; i++) {
                     let eventArgs = events[i].args;
-                    let licensePlate = privateKey.decrypt(eventArgs.nummerplaatEncrypted, 'utf8');
+                    let licensePlate;
+                    try {
+                        licensePlate = privateKey.decrypt(eventArgs.nummerplaatEncrypted, 'utf8');
+                    } catch (error) {
+                        console.log("Failed to decrypt: " + eventArgs.nummerplaatEncrypted);
+                    }
                     let key = eventArgs.key;
                     if (docs.filter(function (obj) { return obj.licensePlate === licensePlate && obj.key === key }).length === 0) {
                         toInsert.push({ licensePlate: licensePlate, key: key });
@@ -52,7 +57,12 @@ contract.Park().watch(function (err, event) {
         MongoClient.connect(url, (err, db) => {
             let licensePlates = db.collection('licensePlates');
             let eventArgs = event.args;
-            let licensePlate = privateKey.decrypt(eventArgs.nummerplaatEncrypted, 'utf8');
+            let licensePlate;
+            try {
+                licensePlate = privateKey.decrypt(eventArgs.nummerplaatEncrypted, 'utf8');
+            } catch (error) {
+                console.log("Failed to decrypt: " + eventArgs.nummerplaatEncrypted);
+            }
             let key = eventArgs.key;
             let doc = { licensePlate: licensePlate, key: key };
             licensePlates.findOne(doc, (err, fDoc) => {
