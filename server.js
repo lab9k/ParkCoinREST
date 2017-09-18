@@ -65,7 +65,7 @@ app.get('/check/:plate', (req, res) => {
                     }
                     res.send(result);
                 }).catch(function (error) {
-                    res.send("Error requesting license plate: "+ error);
+                    res.send("Error requesting license plate: " + error);
                 });
             }
         });
@@ -106,7 +106,7 @@ app.get('/check/:plate/:regio', (req, res) => {
                     result.valid = result.timestamps.length !== 0;
                     res.send(result);
                 }).catch(function (error) {
-                    res.send("Error requesting license plate: "+ error);
+                    res.send("Error requesting license plate: " + error);
                 });
             }
         });

@@ -14,8 +14,7 @@ let contract = web3.eth.contract(config.contractABI).at(config.contractAdress);
 contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get(function (err, events) {
     if (err) {
         console.log(err);
-    }
-    else {
+    } else {
         MongoClient.connect(url, (err, db) => {
             let licensePlates = db.collection('licensePlates');
             licensePlates.find({}, { _id: false }).toArray((err, docs) => {
@@ -29,12 +28,13 @@ contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get(function (err, events
                         console.log("Failed to decrypt: " + eventArgs.nummerplaatEncrypted);
                     }
                     let key = eventArgs.key;
-                    if (docs.filter(function (obj) { return obj.licensePlate === licensePlate && obj.key === key }).length === 0) {
+                    if (docs.filter(
+                        function (obj) { return obj.licensePlate === licensePlate && obj.key === key }).length === 0) {
                         toInsert.push({ licensePlate: licensePlate, key: key });
                     }
                 }
                 if (toInsert.length !== 0) {
-                    licensePlates.insertMany(toInsert, function (err, result) {
+                    licensePlates.insertMany(toInsert, function (err) {
                         if (err) {
                             console.log(err);
                         }
@@ -52,8 +52,7 @@ contract.Park({}, { fromBlock: 0, toBlock: 'latest' }).get(function (err, events
 contract.Park().watch(function (err, event) {
     if (err) {
         console.log(err);
-    }
-    else {
+    } else {
         MongoClient.connect(url, (err, db) => {
             let licensePlates = db.collection('licensePlates');
             let eventArgs = event.args;
@@ -67,7 +66,7 @@ contract.Park().watch(function (err, event) {
             let doc = { licensePlate: licensePlate, key: key };
             licensePlates.findOne(doc, (err, fDoc) => {
                 if (fDoc === null) {
-                    licensePlates.insertOne(doc, function (err, result) {
+                    licensePlates.insertOne(doc, function (err) {
                         if (err) {
                             console.log(err);
                         }
