@@ -1,4 +1,4 @@
-# ParkingREST
+# ParkCoinREST
 
 REST API for the [lab9k Parking ethereum application](https://github.com/lab9k/Parking)
 
