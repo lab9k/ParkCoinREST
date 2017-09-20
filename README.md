@@ -2,6 +2,14 @@
 
 REST API for the [lab9k ParkCoin ethereum application](https://github.com/lab9k/Parking)
 
+## Deployment on server
+
+### prerequisites
+
+* nodejs
+* npm
+* geth client
+
 ### Installation
 
     $ git clone https://github.com/lab9k/ParkCoinREST.git
@@ -22,9 +30,57 @@ After installing, a config.json needs to be added, in the following format
     
 A simple MongoDB database needs to be set up with a `parking` database containing a `licensePlates` collection.
 
-### Run server
 
-    nodemon ./server.js localhost 3001
+### Create bash file in order to automate the geth client startup
+    cd /usr/local/bin
+    touch startgeth.sh
+    vim startgeth.sh
+    
+    #!/bin/bash
+    geth --networkid=4 --datadir=$HOME/.rinkeby --cache=512 --ethstats='yournode:Respect my authoritah!@stats.rinkeby.io' --                 bootnodes=enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc512
+    96ff084b770b94fb9028c4d25ccf@52.169.42.101:30303 --rpc --rpcapi="personal,eth,network"
+    exit 0;
+  
+### Configure bash file as a service
+    cd /etc/systemd/system
+    touch geth.service
+    vim geth.service
+    
+    [Service]
+    ExecStart=/usr/local/bin/startgeth.sh
+
+    [Install]
+    WantedBy=default.target
+    
+### Configure parkcoinAPI as a service
+    cd /etc/systemd/system
+    touch parkCoinAPI.service
+    vim parkCoinAPI.service
+    
+    [Unit]
+    Description= parkcoin API
+
+    [Service]
+    ExecStart=/usr/bin/node /root/ParkingREST/server.js
+    Restart=always
+    RestartSec=10
+    StandardOutput=syslog
+    StandardError=syslog
+    SyslogIdentifier=parkcoin API
+    Environment=NODE_ENV=production PORT=3001
+
+    [Install]
+    WantedBy=multi-user.target
+
+### Configure proxy
+    cd /etc/apache2/sites-available
+    touch verenigingen.conf
+    vim verenigingen.conf
+    
+    <VirtualHost *:80>
+        Servername apiparkcoin.lab9k.gent
+        ProxyPass / http://localhost:8080/
+    </VirtualHost>
     
 ### Implementation
 
