@@ -82,7 +82,7 @@ A simple MongoDB database needs to be set up with a `parking` database containin
         ProxyPass / http://localhost:8080/
     </VirtualHost>
     
-### Implementation
+## Implementation
 
 Each 'Park' event added to the contract will be caught by the API. The encrypted license plate will then be 
 decrypted using the specified private key from the config. The decrypted plate will be stored alongside of it's key
