@@ -1,12 +1,12 @@
 # ParkCoinREST
 
-REST API for the [lab9k Parking ethereum application](https://github.com/lab9k/Parking)
+REST API for the [lab9k ParkCoin ethereum application](https://github.com/lab9k/Parking)
 
 ### Installation
 
-    $ git clone https://github.com/lab9k/ParkingREST.git
+    $ git clone https://github.com/lab9k/ParkCoinREST.git
 
-    $ cd ParkingREST
+    $ cd ParkCoinREST
 
     $ npm install
     
