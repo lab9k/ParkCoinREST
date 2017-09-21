@@ -36,7 +36,7 @@ cd /usr/local/bin
 touch startgeth.sh
 vim startgeth.sh
 ```
-Voeg het onderstaande toe aan geth.sh
+Voeg het onderstaande toe aan startgeth.sh
 ```
 #!/bin/bash
 geth --networkid=4 --datadir=/root/.rinkeby --cache=512 --ethstats='yournode:Respect my authoritah!@stats.rinkeby.io' --             bootnodes=enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc512
